@@ -695,7 +695,8 @@ Measured on Apple M-series (macOS, Apple clang 21, `-O2`) unless noted.
 | `make test_asan` | 138 of 138, no AddressSanitizer or UndefinedBehaviorSanitizer report |
 | `make test_tsan` | 2 of 2 threads tests, no ThreadSanitizer report |
 | `make test_long` | 138 of 138; the random test runs 64 seeds × 20,000 operations |
-| External (§15.3) | `fsck_msdos -n` exit 0 on: a 40 MiB vfat32 image (80,606 clusters); 64 KiB and 1 MiB relaxed images (112 and 2,005 clusters) with long and UTF-8 names; an image formatted by macOS (`hdiutil … MS-DOS FAT32`), reused, written and checked by vfat32 |
+| External (§15.3) | macOS `fsck_msdos -n` exit 0 on: a 40 MiB vfat32 image (80,606 clusters); 64 KiB and 1 MiB relaxed images (112 and 2,005 clusters) with long and UTF-8 names; an image formatted by macOS (`hdiutil … MS-DOS FAT32`), reused, written and checked by vfat32. Linux CI `fsck.fat 4.2 -n` exit 0 on the same images and on one made by `mkfs.fat -F 32`; on relaxed images it adds the expected G1 notice ("FAT32 … but has only 2008 clusters, less than the required minimum of 65525") |
+| CI | GitHub Actions green on Ubuntu (g++, glibc, dosfstools) and macOS (clang): build, test, test_asan, test_tsan, test_long, check_embedded, figures byte-identical to the committed ones |
 | `make check_embedded` | no heap/exception/RTTI symbol; external symbols `memcpy memset memcmp memchr strlen vsnprintf` only. AVR ATmega2560 whole-API program: 38,928 B flash, `vfs` 383 B; ESP32 library objects 25,568 B |
 | `make arduino_check` | `vfat32_basic` on ESP32 (296,920 B flash) and Mega 2560 (26,152 B flash, 5,349 B RAM with a 4 KiB volume); `vfat32_retained_ram` on ESP32; no warning |
 | `sizeof(vfs)` | PC defaults 6,848 B; ESP32 defaults 6,668 B; 4 files/2 dirs/128 B buffers/64 B names: 1,328 B (PC), 1,208 B (ESP32); 2/1/no buffer/12 B: 352 B |

@@ -874,9 +874,11 @@ hdiutil attach -imagekey diskimage-class=CRawDiskImage volume.img   # macOS
 And the other way round: format an image on the PC (`newfs_msdos -F 32`, `mkfs.fat -F 32`), load it into memory,
 `mount(reuse)`.
 
-Verified: images made by vfat32 pass macOS `fsck_msdos -n` (exit 0) — a 40 MiB volume with 80,606 clusters (FAT32
-by every rule) and also 64 KiB and 1 MiB volumes with long and UTF-8 names (relaxed layout, decision G1). The test
-suite repeats this on every run where the host tool exists (§15).
+Verified: images made by vfat32 pass macOS `fsck_msdos -n` and Linux `fsck.fat -n` (dosfstools 4.2), exit 0 — a
+40 MiB volume with 80,606 clusters (FAT32 by every rule) and also 64 KiB and 1 MiB volumes with long and UTF-8 names
+(relaxed layout, decision G1; `fsck.fat` adds a notice that they have fewer than 65,525 clusters). Images formatted
+by `hdiutil` (macOS) and `mkfs.fat` (Linux) are reused, written and pass the checker again. The test suite repeats
+all of this on every run where the host tools exist, including CI (§15).
 
 **Small volumes and Windows.** Microsoft's rule calls a volume FAT32 only from 65,525 clusters (≈ 33 MiB with 512-byte
 clusters). vfat32 always writes FAT32 structures (spec G1): Linux, macOS and mtools recognise FAT32 by those
