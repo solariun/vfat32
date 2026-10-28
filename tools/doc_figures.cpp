@@ -334,7 +334,7 @@ void walk_dir(const uint8_t* m, map_model& mm, uint32_t first, const char* prefi
             char name[16];
             sfn_name(e, name);
             char path[name_size];
-            snprintf(path, sizeof path, "%s/%s", prefix, name);
+            if (snprintf(path, sizeof path, "%s/%s", prefix, name) >= static_cast<int>(sizeof path)) continue;
             uint32_t head = ld16(e + 20) << 16 | ld16(e + 26);
             bool is_dir = (e[11] & vfat32::attr_directory) != 0;
             add_chain(mm, head, path, is_dir);

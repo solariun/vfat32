@@ -381,8 +381,8 @@ int vfs::format_memory(uint8_t* m, size_t size, const format_options* options) {
     memset(m, 0, meta_bytes);
     memset(m + meta_bytes, 0, cluster_bytes);
 
-    uint16_t date, time;
-    uint8_t tenth;
+    uint16_t date = 0, time = 0;
+    uint8_t tenth = 0;
     stamp_now(date, time, tenth);
     uint8_t label[label_length];
     make_label(o.volume_label, label);

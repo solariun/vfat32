@@ -78,7 +78,7 @@ int vfs::iter_advance(slot_iter& it) const {
     if (it.cluster == 0) return 0;
     ++it.slot;
     if (++it.index < slots_per_cluster_) return 1;
-    uint32_t next;
+    uint32_t next = 0;
     int r = chain_next(it.cluster, next);
     if (r < 0 || ++it.steps > cluster_count_) {
         it.cluster = 0;
@@ -97,7 +97,7 @@ int vfs::iter_advance(slot_iter& it) const {
 int vfs::iter_seek(slot_iter& it, uint32_t first, uint32_t slot) const {
     iter_start(it, first);
     for (uint32_t skip = slot / slots_per_cluster_; skip > 0; --skip) {
-        uint32_t next;
+        uint32_t next = 0;
         if (chain_next(it.cluster, next) <= 0 || ++it.steps > cluster_count_) {
             it.cluster = 0;
             it.steps = corrupt_steps;
@@ -249,10 +249,10 @@ int vfs::resolve(const char* path, lookup& r) {
         }
         if (is_dot_name(p, len)) {
             if (len == 2 && dir != root_cluster_) {
-                uint32_t parent;
+                uint32_t parent = 0;
                 if (dotdot_of(dir, parent) < 0) return fail(error::corrupt);
                 if (parent != root_cluster_) {
-                    uint32_t grand;
+                    uint32_t grand = 0;
                     if (dotdot_of(parent, grand) < 0) return fail(error::corrupt);
                     if (find_child_dir(grand, parent, cur) <= 0) return fail(error::corrupt);
                 }
@@ -325,7 +325,7 @@ int vfs::make_sfn(uint32_t dir, uint8_t sfn[11], uint8_t& nt_flags, bool& need_l
     need_lfn = true;
     nt_flags = 0;
     uint8_t basis[sfn_length];
-    bool lossy;
+    bool lossy = false;
     target_basis(basis, lossy);
     if (!lossy) {
         memcpy(sfn, basis, sfn_length);
@@ -338,7 +338,7 @@ int vfs::make_sfn(uint32_t dir, uint8_t sfn[11], uint8_t& nt_flags, bool& need_l
     for (uint32_t n = 1; n <= sfn_plain_tails + sfn_hash_attempts; ++n) {
         memcpy(sfn, basis, sfn_length);
         memset(sfn, ' ', sfn_base_length);
-        size_t k;
+        size_t k = 0;
         if (n <= sfn_plain_tails) {
             k = base_len < sfn_base_length - tail_length ? base_len : sfn_base_length - tail_length;
             memcpy(sfn, basis, k);
@@ -400,11 +400,11 @@ int vfs::find_free_run(uint32_t dir, uint32_t count, uint32_t& first_slot) {
 int vfs::create_entry(uint32_t dir, uint8_t attr, uint32_t first_cluster, const uint8_t* copy_from,
                       found_entry& out) {
     uint8_t sfn[sfn_length];
-    uint8_t nt;
-    bool need_lfn;
+    uint8_t nt = 0;
+    bool need_lfn = false;
     if (make_sfn(dir, sfn, nt, need_lfn) < 0) return -1;
     uint32_t lfn_slots = need_lfn ? (target_len_ + lfn_units_per_slot - 1) / lfn_units_per_slot : 0;
-    uint32_t start;
+    uint32_t start = 0;
     if (find_free_run(dir, lfn_slots + 1, start) < 0) return -1;
     slot_iter it;
     if (iter_seek(it, dir, start) < 0) return fail(error::corrupt);
@@ -431,8 +431,8 @@ int vfs::create_entry(uint32_t dir, uint8_t attr, uint32_t first_cluster, const 
     if (copy_from) {
         memcpy(e, copy_from, entry_size);
     } else {
-        uint16_t date, time;
-        uint8_t tenth;
+        uint16_t date = 0, time = 0;
+        uint8_t tenth = 0;
         stamp_now(date, time, tenth);
         memset(e, 0, entry_size);
         e[de_attr] = attr;
@@ -527,7 +527,7 @@ int vfs::is_ancestor(uint32_t ancestor, uint32_t dir, bool& result) {
             return 0;
         }
         if (c == root_cluster_) return 0;
-        uint32_t parent;
+        uint32_t parent = 0;
         if (dotdot_of(c, parent) < 0) return fail(error::corrupt);
         c = parent;
     }
@@ -545,7 +545,7 @@ int vfs::remove_entry(const lookup& r, bool allow_file, bool allow_dir) {
         if (!allow_dir) return fail(error::is_directory);
         if (dir_open(first)) return fail(error::busy);
         if (valid_cluster(first)) {
-            bool empty;
+            bool empty = false;
             if (dir_is_empty(first, empty) < 0) return -1;
             if (!empty) return fail(error::not_empty);
         }
@@ -569,8 +569,8 @@ int vfs::mkdir(const char* path) {
     if (!target_valid_for_create()) return fail(error::invalid);
     uint32_t c = alloc_dir_cluster(0);
     if (!c) return fail(error::no_space);
-    uint16_t date, time;
-    uint8_t tenth;
+    uint16_t date = 0, time = 0;
+    uint8_t tenth = 0;
     stamp_now(date, time, tenth);
     uint8_t* d = cluster_ptr(c);
     for (int k = 0; k < 2; ++k) {
@@ -660,7 +660,7 @@ int vfs::rename(const char* old_path, const char* new_path) {
     if (is_dot_name(rn.name, rn.name_len)) return fail(error::invalid);
     if (rn.trailing_slash && !old_is_dir) return fail(error::not_directory);
     if (old_is_dir) {
-        bool inside;
+        bool inside = false;
         if (is_ancestor(old_cluster, rn.parent, inside) < 0) return -1;
         if (inside) return fail(error::invalid);
     }

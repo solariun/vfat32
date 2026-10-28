@@ -189,7 +189,7 @@ TEST(threads_shared_volume_with_recursive_lock) {
     for (int t = 0; t < thread_count; ++t) CHECK_EQ(next[t], iterations);
     for (int t = 0; t < thread_count; ++t)
         for (int k = 0; k < files_per_thread; ++k) {
-            snprintf(path, sizeof path, "/t%d/file number %d.bin", t, k);
+            if (snprintf(path, sizeof path, "/t%d/file number %d.bin", t, k) >= static_cast<int>(sizeof path)) continue;
             if (states[t].final_exists[k])
                 CHECK(test::file_equals(v.fs, path, states[t].final_data[k], states[t].final_size[k]));
             else

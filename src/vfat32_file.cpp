@@ -69,7 +69,7 @@ file* vfs::open_common(const char* path, uint8_t access, bool create, bool excl,
     }
     lookup r;
     if (resolve(path, r) < 0) return nullptr;
-    size_t offset;
+    size_t offset = 0;
     bool truncated = false;
     if (r.found) {
         if (r.is_root || (entry_ptr(r.entry.offset)[de_attr] & attr_directory)) {
@@ -182,7 +182,7 @@ uint32_t vfs::raw_read(size_t entry, uint32_t& cache_index, uint32_t& cache_clus
     uint32_t done = 0;
     while (done < n) {
         uint32_t p = pos + done;
-        uint32_t c;
+        uint32_t c = 0;
         if (cluster_for(entry, cache_index, cache_cluster, p >> cluster_shift_, false, c) < 0) {
             failed = true;
             break;
@@ -219,7 +219,7 @@ uint32_t vfs::raw_write(size_t entry, uint32_t& cache_index, uint32_t& cache_clu
     uint32_t done = 0;
     while (done < n) {
         uint32_t p = pos + done;
-        uint32_t c;
+        uint32_t c = 0;
         if (cluster_for(entry, cache_index, cache_cluster, p >> cluster_shift_, true, c) < 0) {
             failed = true;
             break;
@@ -270,7 +270,7 @@ int vfs::truncate_entry(size_t entry, uint32_t length, file* writer) {
             uint32_t c = first;
             if (!valid_cluster(c)) return fail(error::corrupt);
             for (uint32_t i = 1; i < keep; ++i) {
-                uint32_t next;
+                uint32_t next = 0;
                 if (chain_next(c, next) <= 0) return fail(error::corrupt);
                 c = next;
             }
@@ -282,7 +282,7 @@ int vfs::truncate_entry(size_t entry, uint32_t length, file* writer) {
         invalidate_others(entry, nullptr, true);
     } else {
         uint32_t ci = no_cache, cc = 0;
-        bool failed;
+        bool failed = false;
         raw_write(entry, ci, cc, size, nullptr, length - size, writer, failed);
         if (failed) return -1;
     }
@@ -311,7 +311,7 @@ int vfs::flush_stream(file& h) {
     uint32_t start = (h.flags_ & fl_append) ? ld32(entry_ptr(h.entry_) + de_size) : h.buf_start_;
     uint32_t len = static_cast<uint32_t>(h.buf_len_);
     h.buf_len_ = 0;
-    bool failed;
+    bool failed = false;
     uint32_t w = raw_write(h.entry_, h.cache_index_, h.cache_cluster_, start, h.buf_, len, &h, failed);
     h.pos_ = start + w;
     if (w) h.flags_ |= fl_modified;
@@ -325,8 +325,8 @@ int vfs::flush_stream(file& h) {
 // D9, F20
 int vfs::finalize(file& h) {
     if (!(h.flags_ & fl_modified)) return 0;
-    uint16_t date, time;
-    uint8_t tenth;
+    uint16_t date = 0, time = 0;
+    uint8_t tenth = 0;
     stamp_now(date, time, tenth);
     uint8_t* e = entry_ptr(h.entry_);
     st16(e + de_write_time, time);
@@ -356,7 +356,7 @@ void vfs::prepare_fd(file& h) {
 
 int vfs::seek_to(file& h, int64_t offset, int whence, uint32_t& result) {
     if (h.buf_state_ == st_writing && flush_stream(h) < 0) return -1;
-    int64_t base;
+    int64_t base = 0;
     switch (whence) {
         case seek_set: base = 0; break;
         case seek_cur: base = static_cast<int64_t>(h.pos_) - ((h.unget_ >= 0 && h.pos_ > 0) ? 1 : 0); break;
@@ -397,7 +397,7 @@ size_t vfs::stream_read(file& h, uint8_t* out, size_t total) {
             continue;
         }
         size_t remaining = total - done;
-        bool failed;
+        bool failed = false;
         if (buffered && remaining < h.buf_size_) {
             uint32_t n = raw_read(h.entry_, h.cache_index_, h.cache_cluster_, h.pos_, h.buf_, clamp_count(h.buf_size_),
                                   failed);
@@ -448,7 +448,7 @@ size_t vfs::stream_write(file& h, const uint8_t* in, size_t total) {
             if (h.buf_state_ == st_writing && flush_stream(h) < 0) return done;
             uint32_t start = append ? ld32(entry_ptr(h.entry_) + de_size) : h.pos_;
             uint32_t want = clamp_count(remaining);
-            bool failed;
+            bool failed = false;
             uint32_t n = raw_write(h.entry_, h.cache_index_, h.cache_cluster_, start, in + done, want, &h, failed);
             h.pos_ = start + n;
             done += n;
@@ -494,7 +494,7 @@ file* vfs::fopen(const char* path, const char* mode) {
         fail(error::invalid);
         return nullptr;
     }
-    uint8_t access;
+    uint8_t access = 0;
     bool create = false, trunc = false, append = false, excl = false;
     switch (mode[0]) {  // B1
         case 'r': access = fl_read; break;
@@ -564,7 +564,7 @@ int vfs::getc_locked(file& h) {
     }
     if (h.buf_state_ == st_reading && h.pos_ >= h.buf_start_ && h.pos_ < h.buf_start_ + h.buf_len_)
         return h.buf_[h.pos_++ - h.buf_start_];
-    uint8_t c;
+    uint8_t c = 0;
     return stream_read(h, &c, 1) == 1 ? c : eof;
 }
 
@@ -690,7 +690,7 @@ int vfs::fseek(file* stream, long offset, int whence) {
     guard g(*this);
     file* h = valid_file(stream);
     if (!h) return fail(error::bad_handle);
-    uint32_t pos;
+    uint32_t pos = 0;
     return seek_to(*h, offset, whence, pos);
 }
 
@@ -710,7 +710,7 @@ void vfs::rewind(file* stream) {
         fail(error::bad_handle);
         return;
     }
-    uint32_t pos;
+    uint32_t pos = 0;
     seek_to(*h, 0, seek_set, pos);
     h->flags_ &= static_cast<uint8_t>(~fl_error);
 }
@@ -729,7 +729,7 @@ int vfs::fsetpos(file* stream, const fpos_t* pos) {
     file* h = valid_file(stream);
     if (!h) return fail(error::bad_handle);
     if (!pos) return fail(error::invalid);
-    uint32_t p;
+    uint32_t p = 0;
     return seek_to(*h, pos->position, seek_set, p);
 }
 
@@ -825,7 +825,7 @@ int vfs::fileno(file* stream) {
 
 int vfs::open(const char* path, int flags) {
     guard g(*this);
-    uint8_t access;
+    uint8_t access = 0;
     switch (flags & o_accmode) {
         case o_rdonly: access = fl_read; break;
         case o_wronly: access = fl_write; break;
@@ -851,7 +851,7 @@ long vfs::read(int fd, void* buf, size_t count) {
     if (count == 0) return 0;
     if (!buf) return fail(error::invalid);
     prepare_fd(*h);
-    bool failed;
+    bool failed = false;
     uint32_t n = raw_read(h->entry_, h->cache_index_, h->cache_cluster_, h->pos_, buf, clamp_count(count), failed);
     h->pos_ += n;
     if (failed && n == 0) return -1;
@@ -866,7 +866,7 @@ long vfs::write(int fd, const void* buf, size_t count) {
     if (!buf) return fail(error::invalid);
     prepare_fd(*h);
     uint32_t start = (h->flags_ & fl_append) ? ld32(entry_ptr(h->entry_) + de_size) : h->pos_;
-    bool failed;
+    bool failed = false;
     uint32_t n = raw_write(h->entry_, h->cache_index_, h->cache_cluster_, start, buf, clamp_count(count), h, failed);
     h->pos_ = start + n;
     if (n) h->flags_ |= fl_modified;
@@ -879,7 +879,7 @@ long vfs::lseek(int fd, long offset, int whence) {
     file* h = valid_fd(fd);
     if (!h) return fail(error::bad_handle);
     prepare_fd(*h);
-    uint32_t pos;
+    uint32_t pos = 0;
     if (seek_to(*h, offset, whence, pos) < 0) return -1;
     if (!fits_long(pos)) return fail(error::overflow);
     return static_cast<long>(pos);
@@ -925,8 +925,8 @@ int vfs::truncate(const char* path, long length) {
     uint32_t before = ld32(entry_ptr(r.entry.offset) + de_size);
     if (truncate_entry(r.entry.offset, static_cast<uint32_t>(length), nullptr) < 0) return -1;
     if (before != static_cast<uint32_t>(length)) {
-        uint16_t date, time;
-        uint8_t tenth;
+        uint16_t date = 0, time = 0;
+        uint8_t tenth = 0;
         stamp_now(date, time, tenth);
         uint8_t* e = entry_ptr(r.entry.offset);
         st16(e + de_write_time, time);

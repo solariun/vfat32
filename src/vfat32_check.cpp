@@ -25,7 +25,7 @@ int vfs::walk_next(walk_state& w, found_entry& fe) {
 int vfs::walk_up(walk_state& w) {
     uint32_t child = w.it.first;
     if (child == root_cluster_) return 0;
-    uint32_t parent;
+    uint32_t parent = 0;
     if (dotdot_of(child, parent) < 0) return -1;
     iter_start(w.it, parent);
     for (;;) {
@@ -131,8 +131,8 @@ int vfs::check_pass(check_report& r, bool repair) {
     const bool walk = repair || r.reserved_bits == 0;
     bool complete = walk;
     if (walk) {
-        uint32_t len;
-        bool broken;
+        uint32_t len = 0;
+        bool broken = false;
         mark_chain(nullptr, root_cluster_, repair, r, len, broken);
         bool walking = !(broken && !repair);  // a broken root chain cannot be read safely
         if (!walking) complete = false;
@@ -396,7 +396,7 @@ int vfs::find_referrer(uint32_t cluster, referrer& ref) {
         ref.where = 0;
         return 0;
     }
-    size_t offset;
+    size_t offset = 0;
     if (find_head_entry(cluster, offset) == 1) {
         ref.kind = ref_entry;
         ref.where = offset;

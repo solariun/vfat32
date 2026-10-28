@@ -44,8 +44,8 @@ int vfs::set_target(const char* name, size_t len) {
     size_t i = 0;
     while (i < len) {
         uint8_t b = s[i];
-        uint32_t cp, minimum;
-        size_t n;
+        uint32_t cp = 0, minimum = 0;
+        size_t n = 0;
         if (b < two_byte_min) {
             cp = b;
             n = 1;
