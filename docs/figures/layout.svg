@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="330" viewBox="0 0 920 330" font-family="Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="920" height="330" fill="#ffffff"/>
+<text x="20.0" y="28.0" font-size="16" text-anchor="start" fill="#222222">On-disk layout of a 1024 KiB vfat32 volume (default format options, read back from the BPB)</text>
+<rect x="20.0" y="60.0" width="17.2" height="34.0" fill="#E69F00" stroke="#222222"/>
+<rect x="37.2" y="60.0" width="862.8" height="34.0" fill="#bfe3d6" stroke="#222222"/>
+<text x="460.0" y="82.0" font-size="13" text-anchor="middle" fill="#222222">data region: 2008 clusters of 512 bytes (98.0 % of the volume)</text>
+<text x="20.0" y="112.0" font-size="12" text-anchor="start" fill="#666666">whole volume: 2048 sectors of 512 bytes — metadata (reserved + FATs) is the thin left part: 40 sectors</text>
+<rect x="20.0" y="150.0" width="18.3" height="40.0" fill="#0072B2" stroke="#ffffff"/>
+<rect x="38.3" y="150.0" width="18.3" height="40.0" fill="#56B4E9" stroke="#ffffff"/>
+<rect x="56.7" y="150.0" width="18.3" height="40.0" fill="#dde6f0" stroke="#ffffff"/>
+<rect x="75.0" y="150.0" width="18.3" height="40.0" fill="#dde6f0" stroke="#ffffff"/>
+<rect x="93.3" y="150.0" width="18.3" height="40.0" fill="#dde6f0" stroke="#ffffff"/>
+<rect x="111.7" y="150.0" width="18.3" height="40.0" fill="#dde6f0" stroke="#ffffff"/>
+<rect x="130.0" y="150.0" width="18.3" height="40.0" fill="#7a9cc6" stroke="#ffffff"/>
+<rect x="148.3" y="150.0" width="18.3" height="40.0" fill="#a9c4e0" stroke="#ffffff"/>
+<rect x="166.7" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="185.0" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="203.3" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="221.7" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="240.0" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="258.3" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="276.7" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="295.0" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="313.3" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="331.7" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="350.0" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="368.3" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="386.7" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="405.0" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="423.3" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="441.7" y="150.0" width="18.3" height="40.0" fill="#E69F00" stroke="#ffffff"/>
+<rect x="460.0" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="478.3" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="496.7" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="515.0" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="533.3" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="551.7" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="570.0" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="588.3" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="606.7" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="625.0" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="643.3" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="661.7" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="680.0" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="698.3" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="716.7" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="735.0" y="150.0" width="18.3" height="40.0" fill="#f3c96b" stroke="#ffffff"/>
+<rect x="753.3" y="150.0" width="18.3" height="40.0" fill="#009E73" stroke="#ffffff"/>
+<rect x="771.7" y="150.0" width="18.3" height="40.0" fill="#bfe3d6" stroke="#ffffff"/>
+<rect x="790.0" y="150.0" width="18.3" height="40.0" fill="#bfe3d6" stroke="#ffffff"/>
+<rect x="808.3" y="150.0" width="18.3" height="40.0" fill="#bfe3d6" stroke="#ffffff"/>
+<rect x="826.7" y="150.0" width="18.3" height="40.0" fill="#bfe3d6" stroke="#ffffff"/>
+<rect x="845.0" y="150.0" width="18.3" height="40.0" fill="#bfe3d6" stroke="#ffffff"/>
+<rect x="863.3" y="150.0" width="18.3" height="40.0" fill="#bfe3d6" stroke="#ffffff"/>
+<rect x="881.7" y="150.0" width="18.3" height="40.0" fill="#bfe3d6" stroke="#ffffff"/>
+<text x="21.0" y="144.0" font-size="11" text-anchor="start" fill="#222222">0</text>
+<text x="39.3" y="144.0" font-size="11" text-anchor="start" fill="#222222">1</text>
+<text x="57.7" y="144.0" font-size="11" text-anchor="start" fill="#222222">2</text>
+<text x="131.0" y="144.0" font-size="11" text-anchor="start" fill="#222222">6</text>
+<text x="149.3" y="144.0" font-size="11" text-anchor="start" fill="#222222">7</text>
+<text x="167.7" y="144.0" font-size="11" text-anchor="start" fill="#222222">8</text>
+<text x="461.0" y="144.0" font-size="11" text-anchor="start" fill="#222222">24</text>
+<text x="754.3" y="144.0" font-size="11" text-anchor="start" fill="#222222">40</text>
+<text x="20.0" y="208.0" font-size="12" text-anchor="start" fill="#666666">zoom: sectors 0 … 47, one cell per sector (numbers mark where each part starts)</text>
+<rect x="20.0" y="229.0" width="14.0" height="14.0" fill="#0072B2" stroke="#222222"/>
+<text x="40.0" y="240.0" font-size="12" text-anchor="start" fill="#222222">boot sector (BPB): sector 0</text>
+<rect x="313.3" y="229.0" width="14.0" height="14.0" fill="#56B4E9" stroke="#222222"/>
+<text x="333.3" y="240.0" font-size="12" text-anchor="start" fill="#222222">FSInfo: sector 1 (free count)</text>
+<rect x="606.7" y="229.0" width="14.0" height="14.0" fill="#7a9cc6" stroke="#222222"/>
+<text x="626.7" y="240.0" font-size="12" text-anchor="start" fill="#222222">backup boot: sector 6</text>
+<rect x="20.0" y="253.0" width="14.0" height="14.0" fill="#a9c4e0" stroke="#222222"/>
+<text x="40.0" y="264.0" font-size="12" text-anchor="start" fill="#222222">backup FSInfo: sector 7</text>
+<rect x="313.3" y="253.0" width="14.0" height="14.0" fill="#dde6f0" stroke="#222222"/>
+<text x="333.3" y="264.0" font-size="12" text-anchor="start" fill="#222222">reserved region: 8 sectors (4096 bytes)</text>
+<rect x="606.7" y="253.0" width="14.0" height="14.0" fill="#E69F00" stroke="#222222"/>
+<text x="626.7" y="264.0" font-size="12" text-anchor="start" fill="#222222">FAT copy 1: sectors 8–23 (8192 bytes)</text>
+<rect x="20.0" y="277.0" width="14.0" height="14.0" fill="#f3c96b" stroke="#222222"/>
+<text x="40.0" y="288.0" font-size="12" text-anchor="start" fill="#222222">FAT copy 2: sectors 24–39 (mirror)</text>
+<rect x="313.3" y="277.0" width="14.0" height="14.0" fill="#009E73" stroke="#222222"/>
+<text x="333.3" y="288.0" font-size="12" text-anchor="start" fill="#222222">root directory: cluster 2 (sector 40)</text>
+<rect x="606.7" y="277.0" width="14.0" height="14.0" fill="#bfe3d6" stroke="#222222"/>
+<text x="626.7" y="288.0" font-size="12" text-anchor="start" fill="#222222">data clusters: 3 … 2009</text>
+</svg>

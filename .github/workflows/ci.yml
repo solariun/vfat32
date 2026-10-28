@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Linux tools (dosfstools for the external fsck test)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dosfstools
+          # Ubuntu 24.04's address-space randomisation breaks the sanitizers' memory maps
+          sudo sysctl vm.mmap_rnd_bits=28
+
+      - name: Toolchain
+        run: c++ --version
+
+      - name: Build (library, tests, examples, figure tool)
+        run: make -j4
+
+      - name: Tests
+        run: make test
+
+      - name: Tests under AddressSanitizer + UndefinedBehaviorSanitizer
+        run: make test_asan
+
+      - name: Threads under ThreadSanitizer
+        run: make test_tsan
+
+      - name: Long stress test
+        run: make test_long
+
+      - name: Embedded check (host part; AVR/ESP32 run where the toolchains exist)
+        run: make check_embedded
+
+      - name: Figures are reproducible
+        run: |
+          make docs
+          git diff --exit-code -- docs/figures
