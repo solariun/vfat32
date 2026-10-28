@@ -411,6 +411,7 @@ int vfs::create_entry(uint32_t dir, uint8_t attr, uint32_t first_cluster, const 
     uint8_t sum = sfn_checksum(sfn);
     for (uint32_t k = 0; k < lfn_slots; ++k) {
         uint8_t* p = iter_slot(it);
+        if (!p) return fail(error::corrupt);
         uint8_t ord = static_cast<uint8_t>(lfn_slots - k);
         memset(p, 0, entry_size);
         p[de_name] = static_cast<uint8_t>(ord | (k == 0 ? lfn_last : 0));
@@ -426,6 +427,7 @@ int vfs::create_entry(uint32_t dir, uint8_t attr, uint32_t first_cluster, const 
         if (iter_advance(it) <= 0) return fail(error::corrupt);
     }
     uint8_t* e = iter_slot(it);
+    if (!e) return fail(error::corrupt);
     if (copy_from) {
         memcpy(e, copy_from, entry_size);
     } else {

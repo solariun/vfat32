@@ -16,6 +16,16 @@ namespace {
 constexpr int64_t max_position = 0xFFFFFFFFll;
 constexpr uint32_t max_chunk = 0x7FFFFFFFu;  // keeps byte counts representable as long
 
+// B8: a 32-bit position always fits in a 64-bit long; with a 32-bit long only up to LONG_MAX.
+bool fits_long(uint32_t v) {
+#if LONG_MAX > 0xFFFFFFFF
+    (void)v;
+    return true;
+#else
+    return v <= static_cast<uint32_t>(LONG_MAX);
+#endif
+}
+
 uint32_t clamp_count(size_t n) {
     uint64_t v = n;  // size_t is 16 bits on AVR
     return v > max_chunk ? max_chunk : static_cast<uint32_t>(v);
@@ -689,7 +699,7 @@ long vfs::ftell(file* stream) {
     file* h = valid_file(stream);
     if (!h) return fail(error::bad_handle);
     uint32_t p = h->pos_ - ((h->unget_ >= 0 && h->pos_ > 0) ? 1 : 0);
-    if (static_cast<unsigned long>(p) > static_cast<unsigned long>(LONG_MAX)) return fail(error::overflow);  // B8
+    if (!fits_long(p)) return fail(error::overflow);  // B8
     return static_cast<long>(p);
 }
 
@@ -871,7 +881,7 @@ long vfs::lseek(int fd, long offset, int whence) {
     prepare_fd(*h);
     uint32_t pos;
     if (seek_to(*h, offset, whence, pos) < 0) return -1;
-    if (static_cast<unsigned long>(pos) > static_cast<unsigned long>(LONG_MAX)) return fail(error::overflow);
+    if (!fits_long(pos)) return fail(error::overflow);
     return static_cast<long>(pos);
 }
 

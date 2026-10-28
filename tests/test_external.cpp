@@ -135,21 +135,23 @@ bool populate(vfat32::vfs& fs, const char* top) {
 }
 
 bool make_host_image(const char* image) {
-    char cmd[1024];
+    char cmd[2048];
     char out[4096];
     if (access("/usr/bin/hdiutil", X_OK) == 0) {
         char dmg[512];
-        snprintf(dmg, sizeof dmg, "%s.dmg", image);
         char base[512];
-        snprintf(base, sizeof base, "%s", image);
+        if (snprintf(dmg, sizeof dmg, "%s.dmg", image) >= static_cast<int>(sizeof dmg) ||
+            snprintf(base, sizeof base, "%s", image) >= static_cast<int>(sizeof base))
+            return false;  // temp path too long
         size_t len = strlen(base);
         if (len > 4 && strcmp(base + len - 4, ".cdr") == 0) base[len - 4] = 0;
         ::remove(dmg);
         ::remove(image);
-        snprintf(cmd, sizeof cmd,
-                 "/usr/bin/hdiutil create -size 40m -fs 'MS-DOS FAT32' -layout NONE -volname HOSTVOL -o '%s' 2>&1 && "
-                 "/usr/bin/hdiutil convert '%s' -format UDTO -o '%s' 2>&1",
-                 dmg, dmg, base);
+        if (snprintf(cmd, sizeof cmd,
+                     "/usr/bin/hdiutil create -size 40m -fs 'MS-DOS FAT32' -layout NONE -volname HOSTVOL -o '%s' 2>&1 "
+                     "&& /usr/bin/hdiutil convert '%s' -format UDTO -o '%s' 2>&1",
+                     dmg, dmg, base) >= static_cast<int>(sizeof cmd))
+            return false;
         int rc = run(cmd, out, sizeof out);
         ::remove(dmg);
         if (rc != 0) printf("    hdiutil failed (%d):\n%s", rc, out);
@@ -157,7 +159,8 @@ bool make_host_image(const char* image) {
     }
     if (has_command("mkfs.fat")) {
         ::remove(image);
-        snprintf(cmd, sizeof cmd, "mkfs.fat -F 32 -C '%s' 40960 2>&1", image);
+        if (snprintf(cmd, sizeof cmd, "mkfs.fat -F 32 -C '%s' 40960 2>&1", image) >= static_cast<int>(sizeof cmd))
+            return false;
         int rc = run(cmd, out, sizeof out);
         if (rc != 0) printf("    mkfs.fat failed (%d):\n%s", rc, out);
         return rc == 0;

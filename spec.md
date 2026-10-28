@@ -28,6 +28,7 @@ the threads tests, TSan); the long stress run passes; images pass macOS `fsck_ms
 | 2026-10-28 | v1.0 built: library (`src/`), tests, examples, figures, README manual; measured numbers in §15.2. |
 | 2026-10-28 | Portability fixes found by building the examples for ESP32 and AVR (D16, K6): the `stat` time fields renamed `st_modified`, `st_created`, `st_accessed` (`st_mtime` and friends are macros in macOS, glibc and newlib); `vfat32.hpp` removes avr-libc's `feof(s)`/`ferror(s)` macros; AVR gets smaller defaults (§13). |
 | 2026-10-28 | Defects found by the tests and fixed: `check()` without repair cleared a pre-existing bit 31 when it had skipped the walk (it must change nothing, C1/C4; found by `check_reserved_bits_c1`); a subdirectory that could not be entered stopped the whole read-only walk, so later entries were not verified (C2; `check_walk_continues_after_bad_subdir_c2` fails before, passes after). Rules made explicit where the test writer had to choose: N5 (no tail when only the case differs), the size repair of §11.1, the error codes of §9. |
+| 2026-10-28 | First Linux CI run (g++ 13, glibc, `-O2`): two warnings clang and the cross compilers had not raised — `-Wtype-limits` on the `long` overflow checks of B8 where `long` is 64 bits (now decided at preprocessing time: `fits_long`), and `-Warray-bounds` on `create_entry`'s write through a slot pointer that is null only at a chain's end (now checked, `corrupt`) — plus `-Wformat-truncation` in the external test. `check_embedded` gained a GCC `-O2 -D_FORTIFY_SOURCE=2` build (ESP32 GCC 14) that reproduces this class of warning locally. |
 
 ### How to read this document
 
@@ -679,7 +680,7 @@ The `vfs` object's size follows from these (measured in §15): mainly `MAX_OPEN_
 | `make test_long` | the random stress test with many more operations and seeds |
 | `make test_asan` | the unit tests under AddressSanitizer and UndefinedBehaviorSanitizer |
 | `make test_tsan` | the threads test under ThreadSanitizer |
-| `make check_embedded` | builds the library for AVR (avr-g++) and ESP32 (xtensa) with `-fno-exceptions -fno-rtti`, and with `VFAT32_USE_HEAP=0` proves no heap, exception or RTTI symbol is referenced; reports sizes |
+| `make check_embedded` | builds the library for AVR (avr-g++) and ESP32 (xtensa) with `-fno-exceptions -fno-rtti`, and with `VFAT32_USE_HEAP=0` proves no heap, exception or RTTI symbol is referenced; reports sizes; builds it again with GCC at `-O2 -D_FORTIFY_SOURCE=2` (the optimisation-dependent warnings of Linux builds) |
 | `make arduino_check` | compiles the Arduino examples with arduino-cli |
 | `make docs` | regenerates the figures in `docs/figures/` from the real code |
 | CI (GitHub Actions) | Ubuntu (GCC, dosfstools: `fsck.fat`/`mkfs.fat` for §15.3) and macOS (clang, `fsck_msdos`/`hdiutil`): build, `test`, `test_asan`, `test_tsan`, `test_long`, `check_embedded`, and `make docs` must leave the committed figures unchanged |

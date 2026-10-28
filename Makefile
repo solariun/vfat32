@@ -136,6 +136,8 @@ ifneq ($(XTENSA_GXX),)
 	@for f in $(LIB_SRC); do $(XTENSA_GXX) $(XTENSA_FLAGS) -DVFAT32_USE_HEAP=0 -c $$f -o $(EMBED_DIR)/esp32_$$(basename $$f .cpp).o || exit 1; done
 	@if $(dir $(XTENSA_GXX))xtensa-esp32-elf-nm -u $(EMBED_DIR)/esp32_*.o | $(SYMBOLS) | grep -E $(FORBIDDEN_SYMBOLS); then echo "FAIL: forbidden symbol (ESP32)"; exit 1; fi
 	@$(dir $(XTENSA_GXX))xtensa-esp32-elf-size -t $(EMBED_DIR)/esp32_*.o | tail -1
+	@echo "== ESP32 GCC at -O2 with _FORTIFY_SOURCE=2 (the warnings glibc's GCC builds raise)"
+	@for f in $(LIB_SRC); do $(XTENSA_GXX) $(XTENSA_FLAGS) -O2 -D_FORTIFY_SOURCE=2 -c $$f -o /dev/null || exit 1; done
 else
 	@echo "== ESP32: xtensa-esp32-elf-g++ not found, skipped"
 endif
